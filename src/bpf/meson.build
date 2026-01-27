@@ -324,7 +324,7 @@ elif use_provided_vmlinux_h
 endif
 conf.set10('HAVE_LSM_INTEGRITY_TYPE', have_lsm_integrity_type)
 
-conf.set10('ENABLE_SYSCTL_BPF', conf.get('HAVE_VMLINUX_H') == 1 and libbpf.version().version_compare('>= 0.7'))
+conf.set10('ENABLE_SYSCTL_BPF', conf.get('BPF_FRAMEWORK') == 1 and libbpf.version().version_compare('>= 0.7'))
 
 bpf_programs = [
         {
@@ -351,7 +351,6 @@ bpf_programs = [
         {
                 'source' : files('sysctl-monitor.bpf.c'),
                 'condition' : 'ENABLE_SYSCTL_BPF',
-                'depends' : vmlinux_h_dependency,
         },
         {
                 'source' : files('userns-restrict.bpf.c'),
