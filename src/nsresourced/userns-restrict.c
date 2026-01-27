@@ -2,7 +2,7 @@
 
 #include <sys/stat.h>
 
-#if HAVE_VMLINUX_H
+#if BPF_FRAMEWORK
 #include "userns-restrict-skel.h"
 #endif
 
@@ -25,14 +25,14 @@
 #define MAP_LINK_PREFIX "/sys/fs/bpf/systemd/userns-restrict/maps"
 
 struct userns_restrict_bpf *userns_restrict_bpf_free(struct userns_restrict_bpf *obj) {
-#if HAVE_VMLINUX_H
+#if BPF_FRAMEWORK
         userns_restrict_bpf__destroy(obj); /* this call is fine with NULL */
 #endif
         return NULL;
 
 }
 
-#if HAVE_VMLINUX_H
+#if BPF_FRAMEWORK
 static int make_inner_hash_map(void) {
         int fd;
 
@@ -54,7 +54,7 @@ int userns_restrict_install(
                 bool pin,
                 struct userns_restrict_bpf **ret) {
 
-#if HAVE_VMLINUX_H
+#if BPF_FRAMEWORK
         _cleanup_(userns_restrict_bpf_freep) struct userns_restrict_bpf *obj = NULL;
         _cleanup_close_ int dummy_mnt_id_hash_fd = -EBADF;
         int r;
@@ -197,7 +197,7 @@ int userns_restrict_put_by_inode(
                 const int mount_fds[],
                 size_t n_mount_fds) {
 
-#if HAVE_VMLINUX_H
+#if BPF_FRAMEWORK
         _cleanup_close_ int inner_map_fd = -EBADF;
         _cleanup_free_ int *mnt_ids = NULL;
         uint64_t ino = userns_inode;
@@ -293,7 +293,7 @@ int userns_restrict_put_by_fd(
                 const int mount_fds[],
                 size_t n_mount_fds) {
 
-#if HAVE_VMLINUX_H
+#if BPF_FRAMEWORK
         struct stat st;
         int r;
 
@@ -323,7 +323,7 @@ int userns_restrict_put_by_fd(
 
 int userns_restrict_reset_by_inode(struct userns_restrict_bpf *obj, uint64_t userns_inode) {
 
-#if HAVE_VMLINUX_H
+#if BPF_FRAMEWORK
         int r, outer_map_fd, setgroups_deny_fd;
         unsigned u;
 
@@ -361,7 +361,7 @@ int userns_restrict_setgroups_deny_by_inode(
                 struct userns_restrict_bpf *obj,
                 uint64_t userns_inode) {
 
-#if HAVE_VMLINUX_H
+#if BPF_FRAMEWORK
         int map_fd, r;
         uint32_t dummy = 1;
         unsigned ino;
@@ -396,7 +396,7 @@ int userns_restrict_setgroups_deny_by_fd(
                 struct userns_restrict_bpf *obj,
                 int userns_fd) {
 
-#if HAVE_VMLINUX_H
+#if BPF_FRAMEWORK
         struct stat st;
         int r;
 
