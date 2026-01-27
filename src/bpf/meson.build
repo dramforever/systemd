@@ -355,8 +355,7 @@ bpf_programs = [
         },
         {
                 'source' : files('userns-restrict.bpf.c'),
-                'condition' : 'HAVE_VMLINUX_H',
-                'depends' : vmlinux_h_dependency,
+                'condition' : 'BPF_FRAMEWORK',
         },
 ]
 
