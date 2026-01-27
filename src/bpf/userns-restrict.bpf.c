@@ -13,15 +13,72 @@
 #undef offsetof
 #undef container_of
 
-#include "vmlinux.h"
-
+#include <asm/ptrace.h>
 #include <errno.h>                      /* IWYU pragma: keep */
+#include <linux/bpf.h>
+#include <stdbool.h>
+#include <sys/types.h>
 #include <bpf/bpf_core_read.h>
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_tracing.h>
 
 #define CONTAINER_UID_MIN ((uid_t) CONTAINER_UID_BASE_MIN)
 #define CONTAINER_UID_MAX ((uid_t) CONTAINER_UID_BASE_MAX + 0xFFFFU)
+
+typedef unsigned short umode_t;
+
+typedef struct {
+        uid_t val;
+} kuid_t;
+
+typedef struct {
+        gid_t val;
+} kgid_t;
+
+struct ns_common {
+        unsigned int inum;
+} __attribute__((preserve_access_index));
+
+struct work_struct {
+} __attribute__((preserve_access_index));
+
+struct user_namespace {
+        struct user_namespace *parent;
+        struct ns_common ns;
+        struct work_struct work;
+} __attribute__((preserve_access_index));
+
+struct cred {
+        struct user_namespace *user_ns;
+        kuid_t fsuid;
+        kgid_t fsgid;
+} __attribute__((preserve_access_index));
+
+struct dentry {
+        struct inode *d_inode;
+} __attribute__((preserve_access_index));
+
+struct mnt_namespace {
+        struct user_namespace *user_ns;
+} __attribute__((preserve_access_index));
+
+struct vfsmount {
+} __attribute__((preserve_access_index));
+
+struct mount {
+        struct vfsmount mnt;
+        struct mnt_namespace *mnt_ns;
+        int mnt_id;
+} __attribute__((preserve_access_index));
+
+struct path {
+        struct vfsmount *mnt;
+        struct dentry *dentry;
+} __attribute__((preserve_access_index));
+
+struct task_struct {
+        const struct cred *cred;
+} __attribute__((preserve_access_index));
 
 #ifndef bpf_core_cast
 /* bpf_rdonly_cast() was introduced in libbpf commit 688879f together with
