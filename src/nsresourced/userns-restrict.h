@@ -3,7 +3,7 @@
 
 #include "forward.h"
 
-#if HAVE_VMLINUX_H
+#if BPF_FRAMEWORK
 #include "bpf/userns-restrict/userns-restrict-skel.h"
 #else
 struct userns_restrict_bpf;
